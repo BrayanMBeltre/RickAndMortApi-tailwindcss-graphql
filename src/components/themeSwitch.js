@@ -12,16 +12,17 @@ export default function ThemeSwitch() {
       <svg
         width="50"
         height="25"
+        className="h-6 w-12"
         viewBox="0 0 50 25"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-          className={`transform  ${
+          className={`transform ${
             colorTheme === "light"
               ? "text-gray-50"
-              : "  translate-x-6 bg-gray-900"
-          }   transition duration-500  fill-current  `}
+              : "translate-x-6 bg-gray-900"
+          } transition duration-500 fill-current`}
           cx="13.5"
           cy="12.5"
           r="12"

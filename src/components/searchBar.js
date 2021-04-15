@@ -1,9 +1,11 @@
-import { SearchIcon, XIcon } from "@heroicons/react/outline";
 import { useState } from "react";
+import { SearchIcon, XIcon } from "@heroicons/react/outline";
+
 import Modal from "react-modal";
 
 Modal.setAppElement("#root");
 
+// modal styles needed for clean modal
 const style = {
   content: {
     top: "20%",
@@ -29,12 +31,11 @@ export default function SearchBar({ setName, name }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setName(characterName);
-    setIsOpen(false);
-  };
 
-  const handleRequestClose = () => {
-    setIsOpen(!isOpen);
+    setName(characterName);
+
+    //close modal after query
+    setIsOpen(false);
   };
 
   return (
@@ -42,25 +43,31 @@ export default function SearchBar({ setName, name }) {
       {/* Open searchBar button */}
       <button
         onClick={() => {
-          name === "" ? setIsOpen(!isOpen) : setName("");
+          // if searchching for some character change name to empty
+          name === "" ? setIsOpen(true) : setName("");
         }}
         className="flex justify-center items-center h-12 w-12 bg-gray-900 dark:bg-gray-50 rounded-full transition duration-500"
       >
+        {/* if searchching for some character change icon */}
         {name === "" ? (
-          <SearchIcon className="w-6 h-6 stroke-current stroke-2 text-gray-50  dark:text-gray-900 transition duration-500" />
+          <SearchIcon className="w-6 h-6 stroke-current stroke-2 text-gray-50 dark:text-gray-900 transition duration-500" />
         ) : (
-          <XIcon className="w-6 h-6 stroke-current stroke-2 text-gray-50  dark:text-gray-900 transition duration-500" />
+          <XIcon className="w-6 h-6 stroke-current stroke-2 text-gray-50 dark:text-gray-900 transition duration-500" />
         )}
       </button>
-      {/* SearchBar  */}
-      <Modal style={style} isOpen={isOpen} onRequestClose={handleRequestClose}>
+      {/* SearchBar */}
+      <Modal
+        style={style}
+        isOpen={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+      >
         <form className="flex items-center " onSubmit={handleSubmit}>
           <input
             autoFocus={true}
             onChange={(e) => {
               setCharacterName(e.target.value);
             }}
-            className="  h-10 w-80 mr-3 rounded-full border-2 border-gray-900 dark:border-gray-50 dark:text-gray-50 dark:bg-gray-900 p-4 transition duration-500 text-center"
+            className="h-10 w-80 mr-3 rounded-full border-2 border-gray-900 dark:border-gray-50 dark:text-gray-50 dark:bg-gray-900 p-4 transition duration-500 text-center"
           />
         </form>
       </Modal>

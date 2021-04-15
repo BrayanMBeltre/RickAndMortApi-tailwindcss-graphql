@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
-import Card from "./card";
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CogIcon,
-} from "@heroicons/react/outline";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/outline";
+
+import LoadingAnimation from "./loadingAnimation";
+import ErrorMessage from "./errorMessage";
 import SearchBar from "./searchBar";
+import Card from "./card";
 
 const GET_ALL_CHARACTERS = gql`
   query($page: Int, $name: String) {
@@ -41,49 +40,37 @@ export default function AllCharacters() {
     variables: { page, name },
   });
 
-  console.log(error);
-
-  if (loading)
-    return (
-      <div className="h-screen flex  justify-center items-center dark:text-gray-50">
-        <div className="h-3/6 flex  items-center ">
-          <CogIcon className="animate-spin w-6 h-6 mr-2" />
-          <h2 className="font-bold text-xl">Loading </h2>
-        </div>
-      </div>
-    );
+  if (loading) return <LoadingAnimation />;
 
   if (error) {
-    return (
-      <div className="h-screen flex  justify-center items-center ">
-        <h2 className="font-bold text-xl">{error.message}</h2>
-      </div>
-    );
+    return <ErrorMessage error={error} />;
   }
 
-  return (
-    <div>
-      <div
-        className={`sm:grid sm:grid-cols-4 sm:gap-4 ${
-          data ? "opacity-100" : "opacity-0"
-        } transition duration-1000`}
-      >
-        <Card characters={data.characters.results} />
-      </div>
+  const characters = data.characters;
 
-      {data.characters.info.next > 0 && (
-        <div className="flex justify-center items-center gap-5 ">
-          {data.characters.info.prev > 0 && (
+  return (
+    <>
+      {/* search button / bar */}
+      <SearchBar setName={setName} name={name} />
+
+      {/* all characteres list */}
+      <Card characters={characters.results} />
+
+      {/* prev button */}
+      {characters.info.next > 0 && (
+        <div className="flex justify-center items-center gap-5">
+          {characters.info.prev > 0 && (
             <button
               onClick={() => setPage(page - 1)}
               className="flex justify-center items-center h-10 rounded-full px-4 dark:text-gray-50"
             >
-              <ArrowLeftIcon className="w-6 h-6 ml-3 stroke-current stroke-2 dark:text-gray-50" />
+              <ArrowLeftIcon className="w-6 h-6 mr-3 stroke-current stroke-2 dark:text-gray-50" />
               Prev
             </button>
           )}
 
-          {data.characters.info.next > 0 && (
+          {/* next button */}
+          {characters.info.next > 0 && (
             <button
               onClick={() => setPage(page + 1)}
               className="flex justify-center items-center h-10 rounded-full px-4 dark:text-gray-50"
@@ -94,7 +81,6 @@ export default function AllCharacters() {
           )}
         </div>
       )}
-      <SearchBar setName={setName} name={name} />
-    </div>
+    </>
   );
 }
